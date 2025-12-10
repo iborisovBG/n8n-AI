@@ -16,7 +16,5 @@ class AdScriptTaskCreated
      */
     public function __construct(
         public AdScriptTask $task
-    ) {
-    }
+    ) {}
 }
-

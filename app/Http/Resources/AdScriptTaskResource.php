@@ -43,4 +43,3 @@ class AdScriptTaskResource extends JsonResource
         return $array;
     }
 }
-

@@ -17,6 +17,7 @@ class SendSlackNotificationOnTaskFailure
 
         if (! $webhookUrl) {
             Log::debug('Slack webhook URL not configured, skipping notification');
+
             return;
         }
 
@@ -124,4 +125,3 @@ class SendSlackNotificationOnTaskFailure
         ];
     }
 }
-

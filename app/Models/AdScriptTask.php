@@ -32,4 +32,3 @@ class AdScriptTask extends Model
         return AdScriptTaskFactory::new();
     }
 }
-

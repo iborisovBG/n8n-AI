@@ -24,6 +24,7 @@ class ValidateN8nSignature
         // If API key is not configured, skip validation
         if (! $apiKey) {
             Log::warning('N8N API key not configured, skipping API key validation');
+
             return $next($request);
         }
 
@@ -61,4 +62,3 @@ class ValidateN8nSignature
         return $next($request);
     }
 }
-

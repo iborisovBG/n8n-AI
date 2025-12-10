@@ -25,12 +25,14 @@ class PasswordResetTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->withSession(['_token' => 'test-token'])
+        $response = $this->withSession(['_token' => 'test-token'])
             ->from(route('password.request'))
             ->post(route('password.email'), [
                 'email' => $user->email,
                 '_token' => 'test-token',
             ]);
+
+        $response->assertSessionHasNoErrors();
 
         Notification::assertSentTo($user, ResetPassword::class);
     }

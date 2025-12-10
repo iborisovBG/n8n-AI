@@ -17,7 +17,5 @@ class AdScriptTaskFailed
     public function __construct(
         public AdScriptTask $task,
         public string $errorMessage
-    ) {
-    }
+    ) {}
 }
-

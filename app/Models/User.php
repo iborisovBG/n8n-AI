@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -50,26 +51,23 @@ class User extends Authenticatable
 
     /**
      * Get the user's initials.
-     *
-     * @return string
      */
     public function initials(): string
     {
         $name = trim($this->name);
-        
+
         if (empty($name)) {
             return strtoupper(substr($this->email, 0, 2));
         }
 
         $words = explode(' ', $name);
-        
+
         if (count($words) >= 2) {
             // First letter of first word and first letter of last word
-            return strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
+            return strtoupper(substr($words[0], 0, 1).substr(end($words), 0, 1));
         }
 
         // If only one word, return first two letters
         return strtoupper(substr($name, 0, 2));
     }
 }
-

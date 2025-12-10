@@ -57,7 +57,7 @@ class SendAdScriptToN8n implements ShouldQueue
 
         try {
             $callbackUrl = config('app.url').'/api/ad-scripts/'.$this->task->id.'/result';
-            
+
             $response = Http::timeout(config('services.n8n.timeout', 120))
                 ->withHeaders([
                     'X-N8N-API-KEY' => $apiKey,
@@ -115,4 +115,3 @@ class SendAdScriptToN8n implements ShouldQueue
         event(new AdScriptTaskFailed($this->task, $errorMessage));
     }
 }
-
