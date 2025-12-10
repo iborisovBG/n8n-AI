@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\AdScriptTaskCreated;
+use App\Http\Requests\StoreAdScriptTaskRequest;
+use App\Http\Requests\UpdateAdScriptTaskResultRequest;
 use App\Http\Resources\AdScriptTaskResource;
 use App\Jobs\SendAdScriptToN8n;
 use App\Models\AdScriptTask;
@@ -50,12 +52,9 @@ class AdScriptController
     /**
      * Store a newly created ad script task.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreAdScriptTaskRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'reference_script' => ['required', 'string', 'min:10'],
-            'outcome_description' => ['required', 'string', 'min:10'],
-        ]);
+        $validated = $request->validated();
 
         $task = AdScriptTask::create([
             'reference_script' => $validated['reference_script'],
@@ -119,7 +118,7 @@ class AdScriptController
     /**
      * Update task result from n8n callback.
      */
-    public function updateResult(Request $request, int $id): JsonResponse
+    public function updateResult(UpdateAdScriptTaskResultRequest $request, int $id): JsonResponse
     {
         $task = AdScriptTask::findOrFail($id);
 
@@ -130,10 +129,7 @@ class AdScriptController
             ], 409);
         }
 
-        $validated = $request->validate([
-            'new_script' => ['required', 'string', 'min:10'],
-            'analysis' => ['required', 'string', 'min:10'],
-        ]);
+        $validated = $request->validated();
 
         $task->update([
             'new_script' => $validated['new_script'],

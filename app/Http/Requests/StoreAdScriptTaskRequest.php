@@ -22,8 +22,8 @@ class StoreAdScriptTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reference_script' => ['required', 'string', 'max:10000'],
-            'config' => ['nullable', 'array'],
+            'reference_script' => ['required', 'string', 'min:10', 'max:10000'],
+            'outcome_description' => ['required', 'string', 'min:10', 'max:10000'],
         ];
     }
 
@@ -37,8 +37,12 @@ class StoreAdScriptTaskRequest extends FormRequest
         return [
             'reference_script.required' => 'The reference script is required.',
             'reference_script.string' => 'The reference script must be a string.',
+            'reference_script.min' => 'The reference script must be at least 10 characters.',
             'reference_script.max' => 'The reference script may not be greater than 10,000 characters.',
-            'config.array' => 'The config must be an array.',
+            'outcome_description.required' => 'The outcome description is required.',
+            'outcome_description.string' => 'The outcome description must be a string.',
+            'outcome_description.min' => 'The outcome description must be at least 10 characters.',
+            'outcome_description.max' => 'The outcome description may not be greater than 10,000 characters.',
         ];
     }
 }

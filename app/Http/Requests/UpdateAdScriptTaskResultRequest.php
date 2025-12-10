@@ -23,10 +23,8 @@ class UpdateAdScriptTaskResultRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', 'string', Rule::in(['completed', 'failed'])],
-            'outcome_description' => ['nullable', 'string', 'max:10000'],
-            'error_message' => ['nullable', 'string', 'max:2000'],
-            'additional_data' => ['nullable', 'array'],
+            'new_script' => ['required', 'string', 'min:10', 'max:10000'],
+            'analysis' => ['required', 'string', 'min:10', 'max:10000'],
         ];
     }
 
@@ -38,11 +36,14 @@ class UpdateAdScriptTaskResultRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'status.required' => 'The status is required.',
-            'status.in' => 'The status must be either "completed" or "failed".',
-            'outcome_description.max' => 'The outcome description may not be greater than 10,000 characters.',
-            'error_message.max' => 'The error message may not be greater than 2,000 characters.',
-            'additional_data.array' => 'The additional data must be an array.',
+            'new_script.required' => 'The new script is required.',
+            'new_script.string' => 'The new script must be a string.',
+            'new_script.min' => 'The new script must be at least 10 characters.',
+            'new_script.max' => 'The new script may not be greater than 10,000 characters.',
+            'analysis.required' => 'The analysis is required.',
+            'analysis.string' => 'The analysis must be a string.',
+            'analysis.min' => 'The analysis must be at least 10 characters.',
+            'analysis.max' => 'The analysis may not be greater than 10,000 characters.',
         ];
     }
 }
