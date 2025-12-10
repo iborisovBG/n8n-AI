@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\ResetUserPassword;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
@@ -54,5 +55,8 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Register user creation logic
         Fortify::createUsersUsing(CreateNewUser::class);
+
+        // Register password reset logic
+        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
     }
 }
