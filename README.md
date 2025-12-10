@@ -1,6 +1,8 @@
 # n8n AI Agents Integration with Laravel
 
-This project demonstrates the integration between a Laravel application and n8n AI Agents for automated advertising script refactoring. The marketing team can submit scripts for analysis and improvement, and the system automatically processes them using AI.
+This project demonstrates the integration between a Laravel 12 application and n8n AI Agents for automated advertising script refactoring. The marketing team can submit scripts for analysis and improvement, and the system automatically processes them using AI.
+
+**Note:** This implementation uses Laravel 12 (latest version) instead of Laravel 10, providing better performance and modern features while maintaining full compatibility with the requirements.
 
 ## Architecture
 

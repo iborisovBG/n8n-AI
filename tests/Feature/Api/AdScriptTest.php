@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use App\Jobs\SendAdScriptToN8n;
 use App\Models\AdScriptTask;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -19,7 +20,8 @@ class AdScriptTest extends TestCase
     {
         Queue::fake();
 
-        $response = $this->postJson('/api/ad-scripts', [
+        $user = User::factory()->create();
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/ad-scripts', [
             'reference_script' => 'This is a sample advertising script that needs to be improved.',
             'outcome_description' => 'Make it more engaging and target young adults aged 18-25.',
         ]);
@@ -48,7 +50,8 @@ class AdScriptTest extends TestCase
      */
     public function test_validation_on_create(): void
     {
-        $response = $this->postJson('/api/ad-scripts', [
+        $user = User::factory()->create();
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/ad-scripts', [
             'reference_script' => 'Short',
             'outcome_description' => '',
         ]);
@@ -117,9 +120,10 @@ class AdScriptTest extends TestCase
      */
     public function test_can_show_task(): void
     {
+        $user = User::factory()->create();
         $task = AdScriptTask::factory()->completed()->create();
 
-        $response = $this->getJson("/api/ad-scripts/{$task->id}");
+        $response = $this->actingAs($user, 'sanctum')->getJson("/api/ad-scripts/{$task->id}");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -141,9 +145,10 @@ class AdScriptTest extends TestCase
      */
     public function test_can_list_tasks(): void
     {
+        $user = User::factory()->create();
         AdScriptTask::factory()->count(5)->create();
 
-        $response = $this->getJson('/api/ad-scripts');
+        $response = $this->actingAs($user, 'sanctum')->getJson('/api/ad-scripts');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -167,7 +172,8 @@ class AdScriptTest extends TestCase
      */
     public function test_show_non_existent_task_returns_404(): void
     {
-        $response = $this->getJson('/api/ad-scripts/99999');
+        $user = User::factory()->create();
+        $response = $this->actingAs($user, 'sanctum')->getJson('/api/ad-scripts/99999');
 
         $response->assertStatus(404);
     }
@@ -177,11 +183,12 @@ class AdScriptTest extends TestCase
      */
     public function test_can_filter_tasks_by_status(): void
     {
+        $user = User::factory()->create();
         AdScriptTask::factory()->count(3)->completed()->create();
         AdScriptTask::factory()->count(2)->failed()->create();
         AdScriptTask::factory()->count(1)->create(['status' => 'pending']);
 
-        $response = $this->getJson('/api/ad-scripts?status=completed');
+        $response = $this->actingAs($user, 'sanctum')->getJson('/api/ad-scripts?status=completed');
 
         $response->assertStatus(200);
         $this->assertCount(3, $response->json('data'));
@@ -193,6 +200,7 @@ class AdScriptTest extends TestCase
      */
     public function test_can_search_tasks(): void
     {
+        $user = User::factory()->create();
         AdScriptTask::factory()->create([
             'reference_script' => 'Marketing script for product launch',
             'outcome_description' => 'Make it more engaging',
@@ -203,7 +211,7 @@ class AdScriptTest extends TestCase
             'outcome_description' => 'Professional tone',
         ]);
 
-        $response = $this->getJson('/api/ad-scripts?search=Marketing');
+        $response = $this->actingAs($user, 'sanctum')->getJson('/api/ad-scripts?search=Marketing');
 
         $response->assertStatus(200);
         $this->assertGreaterThanOrEqual(1, count($response->json('data')));
@@ -214,9 +222,10 @@ class AdScriptTest extends TestCase
      */
     public function test_pagination_respects_max_limit(): void
     {
+        $user = User::factory()->create();
         AdScriptTask::factory()->count(150)->create();
 
-        $response = $this->getJson('/api/ad-scripts?per_page=200');
+        $response = $this->actingAs($user, 'sanctum')->getJson('/api/ad-scripts?per_page=200');
 
         $response->assertStatus(200);
         $this->assertLessThanOrEqual(100, count($response->json('data')));

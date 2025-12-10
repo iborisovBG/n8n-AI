@@ -40,6 +40,7 @@ return [
         'webhook_url' => env('N8N_WEBHOOK_URL'),
         'api_key' => env('N8N_API_KEY'),
         'webhook_secret' => env('N8N_WEBHOOK_SECRET'),
+        'timeout' => env('N8N_TIMEOUT', 120),
         'rate_limit' => [
             'max_attempts' => env('N8N_RATE_LIMIT_MAX_ATTEMPTS', 60),
             'decay_minutes' => env('N8N_RATE_LIMIT_DECAY_MINUTES', 1),
