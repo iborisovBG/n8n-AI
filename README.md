@@ -327,15 +327,11 @@ Failed tasks automatically send notifications to Slack:
 
 3. **Notifications are queued** - Won't block task processing
 
-## n8n Workflow Testing
-
-See [N8N_TESTING.md](N8N_TESTING.md) for comprehensive guide on testing n8n workflows using the n8n CLI test runner.
-
-## 📄 License
+## License
 
 MIT License
 
-## 👤 Author
+## Author
 
 **Ivaylo Borisov**
 - Email: ivaylo@borisov.eu
