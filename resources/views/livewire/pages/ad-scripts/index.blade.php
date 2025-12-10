@@ -86,7 +86,10 @@ new class extends Component {
 
             <!-- Tasks List -->
             <div class="flex flex-col gap-4">
-                @forelse ($this->tasks() as $task)
+                @php
+                    $tasks = $this->tasks();
+                @endphp
+                @forelse ($tasks as $task)
                     <div
                         wire:key="task-{{ $task->id }}"
                         onclick="window.location.href='{{ route('ad-scripts.show', $task->id) }}'"
@@ -144,9 +147,11 @@ new class extends Component {
             </div>
 
             <!-- Pagination -->
-            <div class="mt-4">
-                {{ $this->tasks()->links() }}
-            </div>
+            @if($tasks->hasPages())
+                <div class="mt-4">
+                    {{ $tasks->links() }}
+                </div>
+            @endif
         </div>
     </x-layouts.app>
 </div>
