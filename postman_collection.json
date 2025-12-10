@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "n8n AI Ad Scripts API",
+    "description": "API collection for testing the n8n AI Ad Scripts integration",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Ad Script Task",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reference_script\": \"Buy our amazing product today! Limited time offer. Call now! This is the best deal you'll ever get. Don't miss out!\",\n  \"outcome_description\": \"Make it more professional and appeal to B2B customers. Focus on value proposition and ROI. Remove urgency tactics.\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/ad-scripts",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ad-scripts"]
+        },
+        "description": "Creates a new ad script task and queues it for processing by n8n AI Agent"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Task Details",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/ad-scripts/:id",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ad-scripts", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1",
+              "description": "Task ID"
+            }
+          ]
+        },
+        "description": "Retrieves details of a specific ad script task"
+      },
+      "response": []
+    },
+    {
+      "name": "List All Tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/ad-scripts?per_page=15",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ad-scripts"],
+          "query": [
+            {
+              "key": "per_page",
+              "value": "15",
+              "description": "Number of items per page"
+            }
+          ]
+        },
+        "description": "Lists all ad script tasks with pagination"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Task Result (Callback)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"new_script\": \"Discover how our solution can transform your business operations. Our product delivers measurable ROI through increased efficiency and cost savings. Schedule a consultation to learn more about our enterprise solutions.\",\n  \"analysis\": \"The script was improved by removing urgency tactics and focusing on professional value proposition. Changed from B2C sales language to B2B consultative approach. Emphasized ROI and business outcomes rather than limited-time offers.\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/ad-scripts/:id/result",
+          "host": ["{{base_url}}"],
+          "path": ["api", "ad-scripts", ":id", "result"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1",
+              "description": "Task ID"
+            }
+          ]
+        },
+        "description": "Callback endpoint used by n8n to update task results. This is typically called automatically by the n8n workflow."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}
+
