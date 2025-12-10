@@ -56,7 +56,10 @@ class SendAdScriptToN8n implements ShouldQueue
         }
 
         try {
-            $callbackUrl = config('app.url').'/api/ad-scripts/'.$this->task->id.'/result';
+            // Use internal Docker network URL for callback
+            $callbackUrl = (config('app.url') === 'http://localhost:8000' || str_contains(config('app.url'), 'localhost'))
+                ? 'http://laravel-app:8000/api/ad-scripts/'.$this->task->id.'/result'
+                : config('app.url').'/api/ad-scripts/'.$this->task->id.'/result';
 
             $response = Http::timeout(config('services.n8n.timeout', 120))
                 ->withHeaders([

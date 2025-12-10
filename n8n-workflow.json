@@ -2,12 +2,20 @@
   "name": "Ad Script Refactoring AI Agent",
   "nodes": [
     {
-      "parameters": {},
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ad-script-refactor",
+        "responseMode": "responseNode",
+        "options": {}
+      },
       "id": "webhook-trigger",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300],
+      "position": [
+        250,
+        300
+      ],
       "webhookId": "ad-script-refactor"
     },
     {
@@ -15,13 +23,12 @@
         "conditions": {
           "options": {
             "caseSensitive": true,
-            "leftValue": "",
             "typeValidation": "strict"
           },
           "conditions": [
             {
-              "id": "validate-input",
-              "leftValue": "={{ $json.body.reference_script }}",
+              "id": "validate-reference-script",
+              "leftValue": "={{ $json.reference_script || $json.body?.reference_script }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -29,8 +36,8 @@
               }
             },
             {
-              "id": "validate-outcome",
-              "leftValue": "={{ $json.body.outcome_description }}",
+              "id": "validate-outcome-desc",
+              "leftValue": "={{ $json.outcome_description || $json.body?.outcome_description }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -39,15 +46,17 @@
             }
           ],
           "combinator": "and"
-        },
-        "options": {}
+        }
       },
       "id": "validate-input",
       "name": "Validate Input",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [450, 300]
-    },
+      "position": [
+        450,
+        300
+      ]
+    },    
     {
       "parameters": {
         "model": "gpt-4o",
@@ -63,7 +72,7 @@
             },
             {
               "role": "user",
-              "content": "=Analyze the following advertising script and generate an improved version.\n\n**Reference Script:**\n{{ $json.body.reference_script }}\n\n**Desired Outcome:**\n{{ $json.body.outcome_description }}\n\nPlease provide:\n1. An improved version of the script\n2. A detailed analysis explaining the changes made and why they improve the script\n\nIMPORTANT: Respond ONLY with valid JSON in this exact format (no markdown, no code blocks, no explanations):\n{\n  \"new_script\": \"...\",\n  \"analysis\": \"...\"\n}"
+              "content": "=Analyze the following advertising script and generate an improved version.\n\n**Reference Script:**\n{{ $json.reference_script || $json.body?.reference_script }}\n\n**Desired Outcome:**\n{{ $json.outcome_description || $json.body?.outcome_description }}\n\nPlease provide:\n1. An improved version of the script\n2. A detailed analysis explaining the changes made and why they improve the script\n\nIMPORTANT: Respond ONLY with valid JSON in this exact format (no markdown, no code blocks, no explanations):\n{\n  \"new_script\": \"...\",\n  \"analysis\": \"...\"\n}"
             }
           ]
         }
@@ -72,7 +81,10 @@
       "name": "AI Agent (OpenAI)",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1,
-      "position": [650, 300],
+      "position": [
+        650,
+        300
+      ],
       "credentials": {
         "openAiApi": {
           "id": "openai-credentials",
@@ -82,13 +94,16 @@
     },
     {
       "parameters": {
-        "jsCode": "// Parse AI response and extract JSON\nconst aiResponse = $input.item.json.output || $input.item.json.text || '';\nlet parsedResponse;\n\ntry {\n  // Remove markdown code blocks if present\n  let cleanedResponse = aiResponse.trim();\n  cleanedResponse = cleanedResponse.replace(/^```json\\s*/i, '');\n  cleanedResponse = cleanedResponse.replace(/^```\\s*/i, '');\n  cleanedResponse = cleanedResponse.replace(/```\\s*$/i, '');\n  cleanedResponse = cleanedResponse.trim();\n  \n  // Try to parse as JSON\n  parsedResponse = JSON.parse(cleanedResponse);\n  \n  // Validate required fields\n  if (!parsedResponse.new_script || !parsedResponse.analysis) {\n    throw new Error('Missing required fields: new_script or analysis');\n  }\n  \n  // Ensure strings are not empty\n  if (typeof parsedResponse.new_script !== 'string' || parsedResponse.new_script.trim().length === 0) {\n    throw new Error('new_script must be a non-empty string');\n  }\n  \n  if (typeof parsedResponse.analysis !== 'string' || parsedResponse.analysis.trim().length === 0) {\n    throw new Error('analysis must be a non-empty string');\n  }\n  \n} catch (e) {\n  // If parsing fails, try to extract JSON object from text\n  const jsonObjectMatch = aiResponse.match(/\\{[\\s\\S]*\\}/);\n  if (jsonObjectMatch) {\n    try {\n      parsedResponse = JSON.parse(jsonObjectMatch[0]);\n      if (!parsedResponse.new_script || !parsedResponse.analysis) {\n        throw new Error('Extracted JSON missing required fields');\n      }\n    } catch (parseError) {\n      throw new Error(`Failed to parse AI response: ${e.message}. Original error: ${parseError.message}`);\n    }\n  } else {\n    throw new Error(`Could not parse AI response as JSON: ${e.message}. Response: ${aiResponse.substring(0, 200)}`);\n  }\n}\n\nreturn {\n  json: {\n    task_id: $('Webhook').item.json.body.task_id,\n    callback_url: $('Webhook').item.json.body.callback_url,\n    new_script: parsedResponse.new_script.trim(),\n    analysis: parsedResponse.analysis.trim()\n  }\n};"
+        "jsCode": "// Parse AI response and extract JSON\nconst aiResponse = $input.item.json.output || $input.item.json.text || '';\nlet parsedResponse;\n\ntry {\n  // Remove markdown code blocks if present\n  let cleanedResponse = aiResponse.trim();\n  cleanedResponse = cleanedResponse.replace(/^```json\\s*/i, '');\n  cleanedResponse = cleanedResponse.replace(/^```\\s*/i, '');\n  cleanedResponse = cleanedResponse.replace(/```\\s*$/i, '');\n  cleanedResponse = cleanedResponse.trim();\n  \n  // Try to parse as JSON\n  parsedResponse = JSON.parse(cleanedResponse);\n  \n  // Validate required fields\n  if (!parsedResponse.new_script || !parsedResponse.analysis) {\n    throw new Error('Missing required fields: new_script or analysis');\n  }\n  \n  // Ensure strings are not empty\n  if (typeof parsedResponse.new_script !== 'string' || parsedResponse.new_script.trim().length === 0) {\n    throw new Error('new_script must be a non-empty string');\n  }\n  \n  if (typeof parsedResponse.analysis !== 'string' || parsedResponse.analysis.trim().length === 0) {\n    throw new Error('analysis must be a non-empty string');\n  }\n  \n} catch (e) {\n  // If parsing fails, try to extract JSON object from text\n  const jsonObjectMatch = aiResponse.match(/\\{[\\s\\S]*\\}/);\n  if (jsonObjectMatch) {\n    try {\n      parsedResponse = JSON.parse(jsonObjectMatch[0]);\n      if (!parsedResponse.new_script || !parsedResponse.analysis) {\n        throw new Error('Extracted JSON missing required fields');\n      }\n    } catch (parseError) {\n      throw new Error(`Failed to parse AI response: ${e.message}. Original error: ${parseError.message}`);\n    }\n  } else {\n    throw new Error(`Could not parse AI response as JSON: ${e.message}. Response: ${aiResponse.substring(0, 200)}`);\n  }\n}\n\nreturn {\n  json: {\n    task_id: $('Webhook').item.json.task_id || $('Webhook').item.json.body?.task_id,\n    callback_url: $('Webhook').item.json.callback_url || $('Webhook').item.json.body?.callback_url,\n    new_script: parsedResponse.new_script.trim(),\n    analysis: parsedResponse.analysis.trim()\n  }\n};"
       },
       "id": "parse-response",
       "name": "Parse AI Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [850, 300]
+      "position": [
+        850,
+        300
+      ]
     },
     {
       "parameters": {
@@ -124,7 +139,10 @@
       "name": "HTTP Request (Callback)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1050, 300]
+      "position": [
+        1050,
+        300
+      ]
     },
     {
       "parameters": {
@@ -153,7 +171,10 @@
       "name": "Check Callback Success",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1250, 300]
+      "position": [
+        1250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -165,7 +186,10 @@
       "name": "Respond Success",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1450, 200]
+      "position": [
+        1450,
+        200
+      ]
     },
     {
       "parameters": {
@@ -177,7 +201,10 @@
       "name": "Respond Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1450, 400]
+      "position": [
+        1450,
+        400
+      ]
     },
     {
       "parameters": {
@@ -189,7 +216,10 @@
       "name": "Respond Invalid Input",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [650, 500]
+      "position": [
+        650,
+        500
+      ]
     },
     {
       "parameters": {
@@ -201,7 +231,10 @@
       "name": "Respond AI Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1050, 500]
+      "position": [
+        1050,
+        500
+      ]
     }
   ],
   "connections": {
