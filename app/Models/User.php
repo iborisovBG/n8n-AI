@@ -43,5 +43,29 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the user's initials.
+     *
+     * @return string
+     */
+    public function initials(): string
+    {
+        $name = trim($this->name);
+        
+        if (empty($name)) {
+            return strtoupper(substr($this->email, 0, 2));
+        }
+
+        $words = explode(' ', $name);
+        
+        if (count($words) >= 2) {
+            // First letter of first word and first letter of last word
+            return strtoupper(substr($words[0], 0, 1) . substr(end($words), 0, 1));
+        }
+
+        // If only one word, return first two letters
+        return strtoupper(substr($name, 0, 2));
+    }
 }
 

@@ -31,8 +31,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 
     // Ad Scripts Routes
-    // TODO: Uncomment when Livewire components are created
-    // Route::get('ad-scripts', \App\Livewire\Pages\AdScripts\IndexTasks::class)->name('ad-scripts.index');
-    // Route::get('ad-scripts/create', \App\Livewire\Pages\AdScripts\CreateTask::class)->name('ad-scripts.create');
-    // Route::get('ad-scripts/{id}', \App\Livewire\Pages\AdScripts\ShowTask::class)->name('ad-scripts.show');
+    Volt::route('ad-scripts', 'pages.ad-scripts.index')->name('ad-scripts.index');
+    Volt::route('ad-scripts/create', 'pages.ad-scripts.create')->name('ad-scripts.create');
+    Volt::route('ad-scripts/{id}', 'pages.ad-scripts.show')->name('ad-scripts.show');
 });
