@@ -36,6 +36,22 @@ class FortifyServiceProvider extends ServiceProvider
             return view('livewire.auth.two-factor-challenge');
         });
 
+        Fortify::verifyEmailView(function (Request $request): View {
+            return view('livewire.auth.verify-email');
+        });
+
+        Fortify::requestPasswordResetLinkView(function (Request $request): View {
+            return view('livewire.auth.forgot-password');
+        });
+
+        Fortify::resetPasswordView(function (Request $request): View {
+            return view('livewire.auth.reset-password');
+        });
+
+        Fortify::confirmPasswordView(function (Request $request): View {
+            return view('livewire.auth.confirm-password');
+        });
+
         // Register user creation logic
         Fortify::createUsersUsing(CreateNewUser::class);
     }

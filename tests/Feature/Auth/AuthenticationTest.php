@@ -22,10 +22,13 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->withoutTwoFactor()->create();
 
-        $response = $this->post(route('login.store'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
+        $response = $this->withSession(['_token' => 'test-token'])
+            ->from(route('login'))
+            ->post(route('login.store'), [
+                'email' => $user->email,
+                'password' => 'password',
+                '_token' => 'test-token',
+            ]);
 
         $response
             ->assertSessionHasNoErrors()
@@ -38,10 +41,13 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post(route('login.store'), [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
+        $response = $this->withSession(['_token' => 'test-token'])
+            ->from(route('login'))
+            ->post(route('login.store'), [
+                'email' => $user->email,
+                'password' => 'wrong-password',
+                '_token' => 'test-token',
+            ]);
 
         $response->assertSessionHasErrorsIn('email');
 
@@ -61,10 +67,13 @@ class AuthenticationTest extends TestCase
 
         $user = User::factory()->create();
 
-        $response = $this->post(route('login.store'), [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
+        $response = $this->withSession(['_token' => 'test-token'])
+            ->from(route('login'))
+            ->post(route('login.store'), [
+                'email' => $user->email,
+                'password' => 'password',
+                '_token' => 'test-token',
+            ]);
 
         $response->assertRedirect(route('two-factor.login'));
         $this->assertGuest();
@@ -74,7 +83,9 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post(route('logout'));
+        $response = $this->actingAs($user)
+            ->withSession(['_token' => 'test-token'])
+            ->post(route('logout'), ['_token' => 'test-token']);
 
         $response->assertRedirect(route('home'));
 
