@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 use Illuminate\Http\Request;
@@ -34,6 +35,9 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::twoFactorChallengeView(function (Request $request): View {
             return view('livewire.auth.two-factor-challenge');
         });
+
+        // Register user creation logic
+        Fortify::createUsersUsing(CreateNewUser::class);
     }
 }
 
