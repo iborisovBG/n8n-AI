@@ -135,7 +135,7 @@ php artisan test tests/Feature/Api/AdScriptTest.php
 php artisan test tests/Feature/Jobs/SendAdScriptToN8nTest.php
 ```
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Create Ad Script Task
 
@@ -233,7 +233,7 @@ A Postman collection is included in `postman_collection.json` for easy API testi
 3. Select `postman_collection.json`
 4. Update the `base_url` variable if needed (default: `http://localhost:8000`)
 
-## 🔒 Security
+## Security
 
 - **API Key Authentication**: Callback endpoint (`POST /api/ad-scripts/{id}/result`) requires `X-N8N-API-KEY` header
 - **Rate Limiting**: Configurable rate limiting (default: 60 requests/minute) for task creation
@@ -282,13 +282,13 @@ The application uses Laravel's queue system for asynchronous processing. Jobs ar
 - Timeout handling: 120 seconds for n8n requests
 - Retry mechanism: 3 attempts with exponential backoff
 
-## 📊 Monitoring
+## Monitoring
 
 - Check queue status: `php artisan queue:work --verbose`
 - View failed jobs: `php artisan queue:failed`
 - Retry failed jobs: `php artisan queue:retry {job-id}`
 
-## 📚 Documentation
+## Documentation
 
 - **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference with examples
 - **[Postman Collection](postman_collection.json)** - Import ready Postman collection
@@ -327,20 +327,9 @@ Failed tasks automatically send notifications to Slack:
 
 3. **Notifications are queued** - Won't block task processing
 
-## 🧪 n8n Workflow Testing
+## n8n Workflow Testing
 
 See [N8N_TESTING.md](N8N_TESTING.md) for comprehensive guide on testing n8n workflows using the n8n CLI test runner.
-
-## 🎯 Future Enhancements
-
-- [ ] Add authentication middleware for all API endpoints
-- [ ] Implement HMAC signature validation for enhanced security
-- [ ] Add real-time status updates via Laravel Echo & WebSockets (currently using polling)
-- [ ] Implement OpenAPI/Swagger documentation
-- [ ] Add metrics and monitoring dashboard
-- [ ] Implement webhook retry mechanism
-- [ ] Add task priority system
-- [ ] Implement task scheduling
 
 ## 📄 License
 
@@ -351,7 +340,7 @@ MIT License
 **Ivaylo Borisov**
 - Email: ivaylo@borisov.eu
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
